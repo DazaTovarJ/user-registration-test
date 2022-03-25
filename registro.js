@@ -1,11 +1,24 @@
 document.addEventListener("DOMContentLoaded", () => {
   const btnListar = document.getElementById("listar");
-  const btnRegistrar = document.getElementById("registrar");
+  const formAgregar = document.getElementById("agregar-form");
+
   let table = [
-    {id: 0, nombre: "Son", apellido: "Goku", direccion: "Kamehouse"},
-    {id: 1, nombre: "Son", apellido: "Gohan", direccion: "Calle 5"},
-    {id: 2, nombre: "Picoro", apellido: "Daimaku", direccion: "Calle 9"},
+    { id: 0, nombre: "Son", apellido: "Goku", direccion: "Kamehouse" },
+    { id: 1, nombre: "Son", apellido: "Gohan", direccion: "Calle 5" },
+    { id: 2, nombre: "Picoro", apellido: "Daimaku", direccion: "Calle 9" },
   ];
+
+  const hasUser = id => {
+    let found = false;
+    for (const user of table) {
+      const { id: userId } = user;
+      if (id === userId) {
+        found = true;
+      }
+    }
+
+    return found;
+  };
 
   //TODO: validations: id: required|integer|noexists
   function loadData() {
@@ -22,15 +35,45 @@ document.addEventListener("DOMContentLoaded", () => {
     tableData.innerHTML = tableContent;
   }
 
-  function newData() {
-    let nombre = document.getElementById("nombre").value;
-    let apellido = document.getElementById("apellido").value;
-    let direccion = document.getElementById("direccion").value;
+  function newData(e) {
+    e.preventDefault();
 
-    table.push({nombre, apellido, direccion});
-    loadData();
+    let id = document.getElementById("id");
+    let nombre = document.getElementById("nombre");
+    let apellido = document.getElementById("apellido");
+    let direccion = document.getElementById("direccion");
+    let idMsg = document.getElementById("req-id");
+    let nombreMsg = document.getElementById("req-nombre");
+    let apellidoMsg = document.getElementById("req-apellido");
+    let direccionMsg = document.getElementById("req-direccion");
+
+    if (!formAgregar.checkValidity()) {
+      idMsg.textContent = id.validity.valueMissing
+        ? "El id es requerido"
+        : hasUser(parseInt(id.value))
+        ? "El usuario ya existe"
+        : "";
+      nombreMsg.textContent = nombre.validity.valueMissing
+        ? "El nombre es requerido"
+        : "";
+      apellidoMsg.textContent = apellido.validity.valueMissing
+        ? "El apellido es requerido"
+        : "";
+      direccionMsg.textContent = direccion.validity.valueMissing
+        ? "La dirección es requerida"
+        : "";
+    } else {
+      table.push({
+        id: id.value,
+        nombre: nombre.value,
+        apellido: apellido.value,
+        direccion: direccion.value,
+      });
+      console.log(table);
+      loadData();
+    }
   }
 
   btnListar.addEventListener("click", loadData);
-  btnRegistrar.addEventListener("click", newData);
+  formAgregar.addEventListener("submit", newData);
 });
