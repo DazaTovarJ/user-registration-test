@@ -76,7 +76,6 @@ document.addEventListener("DOMContentLoaded", () => {
         apellido: apellido.value,
         direccion: direccion.value,
       });
-      console.log(table);
       loadData();
     }
   }
